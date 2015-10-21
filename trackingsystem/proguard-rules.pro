@@ -15,3 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keepattributes InnerClasses
+
+-keep class com.skt.tracking.** {*;}
+-dontwarn com.skt.tracking.**

@@ -1,7 +1,8 @@
 package com.skt.tracking.aspect;
 
-import com.skt.tracking.GaManager;
+import com.skt.tracking.TrackingType;
 import com.skt.tracking.annotation.TrackEvent;
+import com.skt.tracking.ga.GaManager;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -46,7 +47,11 @@ public class EventAspect
     public Object sendTrack(ProceedingJoinPoint joinPoint) throws Throwable
     {
         TrackEvent annotation = ((MethodSignature) joinPoint.getSignature()).getMethod().getAnnotation(TrackEvent.class);
-        GaManager.getInstance().trackEvent(annotation.category(), annotation.action(), annotation.label(), annotation.value());
+        if(annotation.trackingType() == TrackingType.GOOGLE_ANALYTICS)
+        {
+            GaManager.getInstance().trackEvent(annotation.category(), annotation.action(), annotation.label(), annotation.value());
+        }
+
         return joinPoint.proceed();
     }
 }

@@ -1,13 +1,18 @@
 package com.skt.tracking.aspect;
 
-import com.skt.tracking.GaManager;
+import com.skt.tracking.TrackingType;
 import com.skt.tracking.annotation.TrackScreenView;
+import com.skt.tracking.annotation.TrackingData;
+import com.skt.tracking.ga.GaManager;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Aspect
 public class ScreenViewAspect
@@ -46,7 +51,20 @@ public class ScreenViewAspect
     public Object sendTrack(ProceedingJoinPoint joinPoint) throws Throwable
     {
         TrackScreenView annotation = ((MethodSignature) joinPoint.getSignature()).getMethod().getAnnotation(TrackScreenView.class);
-        GaManager.getInstance().trackScreen(annotation.name());
+        TrackingData[] fields = annotation.fields();
+        Map<String, String> fieldMap = new HashMap<>();
+        if(fields != null)
+        {
+            for(TrackingData dataField : fields)
+            {
+                fieldMap.put(dataField.key(), dataField.value());
+            }
+        }
+        if(annotation.trackingType() == TrackingType.GOOGLE_ANALYTICS)
+        {
+            GaManager.getInstance().trackScreen(annotation.name(), fieldMap);
+        }
+
         return joinPoint.proceed();
     }
 }

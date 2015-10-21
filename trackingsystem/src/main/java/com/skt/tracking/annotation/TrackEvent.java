@@ -1,5 +1,7 @@
 package com.skt.tracking.annotation;
 
+import com.skt.tracking.TrackingType;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,4 +28,6 @@ public @interface TrackEvent
     String label() default "label";
 
     long value() default 0;
+
+    TrackingType trackingType() default TrackingType.GOOGLE_ANALYTICS;
 }
